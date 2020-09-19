@@ -6,8 +6,12 @@ using UnityEngine;
 public class Homie : ScriptableObject
 {
     public string _name;
+    public float intimidateTime;
     public float kissTime;
     public Animator myAnim;
+
+    public bool isdoingAction;
+
     public enum Action
     {
         lookAway,
