@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Test Homie
   m_EditorClassIdentifier: 
   _name: Pleatly
-  intimidateTime: 2
-  kissTime: 10
+  intimidateTime: 1
+  kissTime: 2
   myAnim: {fileID: 0}
   isdoingAction: 0
   myAction: 0
