@@ -16,8 +16,8 @@ public class Homie : ScriptableObject
     {
         // actually cut all these times in half
         lookAway = 1,
-        pointFingers = 2,
-        squint = 3
+        wink = 2,
+        smirk = 3
     };
 
     public Action myAction;

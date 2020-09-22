@@ -7,6 +7,7 @@ public class HomieBehavior : MonoBehaviour
     public Homie currentHomie; // who are we about to kiss goodnight?
 
     GameController gc;
+    PlayerBehavior player;
 
     public IndicatorMovement intimidateIndicator, kissIndicator;
     bool canKiss;
@@ -16,6 +17,7 @@ public class HomieBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = FindObjectOfType<PlayerBehavior>();
         gc = FindObjectOfType<GameController>();
 
         currentHomie = Instantiate(currentHomie); // creating copy so we don't directly affect object in project
@@ -36,6 +38,21 @@ public class HomieBehavior : MonoBehaviour
             if (actionTimer >= currentHomie.intimidateTime && !canKiss) //intimidate
             {
                 canKiss = intimidateIndicator.canDoAction();
+                if(canKiss)
+                {
+                    switch (currentHomie.myAction)
+                    {
+                        case (Homie.Action.lookAway):
+                            player.SlowDownIndicators();
+                            break;
+                        case (Homie.Action.wink):
+                            player.FreezeIndicators();
+                            break;
+                        case (Homie.Action.smirk):
+                            player.SpeedUpIndicators();
+                            break;
+                    }
+                }
                 Debug.Log(currentHomie._name + "'s cankiss is now " + canKiss);
                 actionTimer = 0f;
             }
@@ -55,15 +72,37 @@ public class HomieBehavior : MonoBehaviour
                 actionTimer = 0f;
             }
 
-            //Debug.Log(actionTimer);
-
-
-
             /// behavior end
 
 
         
         }
          
+    }
+
+    public void FreezeIndicators()
+    {
+        kissIndicator.stunTimer = 1.5f;
+        intimidateIndicator.stunTimer = 1.5f;
+
+        kissIndicator.wasStunned = true;
+        intimidateIndicator.wasStunned = true;
+
+        kissIndicator.wasStunned = true;
+        intimidateIndicator.wasStunned = true;
+
+        kissIndicator.didStop = true;
+        intimidateIndicator.didStop = true;
+    }
+
+    public void SpeedUpIndicators()
+    {
+        kissIndicator.stunTimer += 0.03f;
+        intimidateIndicator.stunTimer += 0.03f;
+    }
+    public void SlowDownIndicators()
+    {
+        kissIndicator.speed -= 0.03f;
+        intimidateIndicator.speed -= 0.03f;
     }
 }

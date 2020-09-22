@@ -11,8 +11,12 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
     public bool didStop; // did the player press/let go of space?
     bool isMovingLeft;
 
+    public float stunTimer = 0f;
+
     GameController gc;
-    float speed;
+    public float speed;
+
+    public bool wasStunned;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,7 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
     // Update is called once per frame
     void Update()
     {
+        if (speed < 0) speed = 0.01f;
         if (!didStop && !gc.gameEnd)
         {
             if (isMovingLeft) transform.position += (Vector3.left * speed);
@@ -31,7 +36,17 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
 
             if (transform.position.x >= endX) isMovingLeft = true;
             if (transform.position.x <= startX) isMovingLeft = false;
+
         }
+
+
+        if (stunTimer > 0f) stunTimer -= Time.deltaTime;
+        else if (wasStunned)
+        {
+            didStop = false; // when stun wears off, bar moves again
+            wasStunned = false;
+        }
+
     }
 
     public bool canDoAction() // if this is called and the x pos is close to middle x it returns true!
@@ -43,7 +58,6 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
             didStop = true;
             return true;
         }
-        else Debug.Log(Mathf.Abs(transform.position.x - middleX));
 
         return false;
     }
