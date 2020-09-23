@@ -18,11 +18,12 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
 
     public bool wasStunned;
 
+    bool finished;// we done with this one yet?
     // Start is called before the first frame update
     void Start()
     {
         gc = FindObjectOfType<GameController>();
-        speed = Random.Range(0.01f, 0.05f);
+        Init();
     }
 
     // Update is called once per frame
@@ -43,7 +44,9 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
         if (stunTimer > 0f) stunTimer -= Time.deltaTime;
         else if (wasStunned)
         {
-            didStop = false; // when stun wears off, bar moves again
+            if(!finished) 
+                didStop = false; // when stun wears off, bar moves again
+
             wasStunned = false;
         }
 
@@ -52,13 +55,25 @@ public class IndicatorMovement : MonoBehaviour // should be on the object moving
     public bool canDoAction() // if this is called and the x pos is close to middle x it returns true!
     {
         // should have a timer go off so that there's a lil delay before you can try again
+        gc.aud.clip = gc.indicatorSnd;
+        gc.aud.Play();
 
         if (Mathf.Abs(transform.position.x - middleX) < 0.2f)
         {
             didStop = true;
+            finished = true;
             return true;
         }
 
         return false;
+    }
+
+    public void Init()
+    {
+        float randX = Random.Range(startX, endX);
+        Vector3 newPos = new Vector3(randX,transform.position.y, 0f);
+        transform.position = newPos;
+        speed = Random.Range(0.01f, 0.05f);
+        if (gc.round == 0) speed = 0.03f;
     }
 }

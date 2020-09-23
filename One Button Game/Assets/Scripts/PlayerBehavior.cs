@@ -10,11 +10,16 @@ public class PlayerBehavior : MonoBehaviour
 
     bool canKiss;
 
+    public Animator anim;
+    Homie.Action myAction ;
+
     // Start is called before the first frame update
     void Start()
     {
         gc = FindObjectOfType<GameController>();
         homie = FindObjectOfType<HomieBehavior>();
+        anim = GetComponent<Animator>();
+        myAction = (Homie.Action)Random.Range(1, 4);
     }
 
     // Update is called once per frame
@@ -22,34 +27,73 @@ public class PlayerBehavior : MonoBehaviour
     {
         if (!gc.gameEnd)
         {
-
-            if (Input.GetKeyDown(KeyCode.Space) && !canKiss) //intimidate
+            if (Input.GetKeyDown(KeyCode.Space) && !canKiss
+                || Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began && !canKiss) //intimidate
             {
                 canKiss = intimidateIndicator.canDoAction();
                 if (canKiss)
                 {
-                    if (gc.matchTimer < 2)
-                        SpeedUpIndicators();
-                    else if (gc.matchTimer < 3)
-                        FreezeIndicators();
-                    else if (gc.matchTimer < 4)
-                        SlowDownIndicators();
-                }
-
-                Debug.Log("canKiss is now " + canKiss);
-            }
-            if (Input.GetKeyUp(KeyCode.Space) && canKiss) // kith
-            {
-                if (kissIndicator.canDoAction())
-                {
-                    gc.score += 1;
-                    gc.gameEnd = true;
-                    Debug.Log("You kissed your homie goodnight uwu");
+                    switch (myAction)
+                    {
+                        case (Homie.Action.lookAway):
+                            SlowDownIndicators();
+                            anim.Play("lookAway");
+                            gc.ShowNewText("You teasingly looked away from " + homie.currentHomie._name);
+                            break;
+                        case (Homie.Action.wink):
+                            FreezeIndicators();
+                            anim.Play("wink");
+                            gc.ShowNewText("You winked at " + homie.currentHomie._name);
+                            break;
+                        case (Homie.Action.smirk):
+                            SpeedUpIndicators();
+                            anim.Play("smirk");
+                            gc.ShowNewText("You smirked flirtatiously at " + homie.currentHomie._name);
+                            break;
+                    }
+                    gc.aud.clip = gc.right;
+                    gc.aud.Play();
                 }
                 else
                 {
-                    Debug.Log("You missed! Try again"); // tbh you should have to start from the top if you miss.
-                    // test that l8r
+                    switch (myAction)
+                    {
+                        case (Homie.Action.lookAway):
+                            anim.Play("lookAwayFail");
+                            gc.ShowNewText("You awkwardly looked away from " + homie.currentHomie._name);
+                            break;
+                        case (Homie.Action.wink):
+                            anim.Play("winkFail");
+                            gc.ShowNewText("You tried to wink at " + homie.currentHomie._name);
+                            break;
+                        case (Homie.Action.smirk):
+                            anim.Play("smirkFail");
+                            gc.ShowNewText("You made a weird smile at " + homie.currentHomie._name);
+                            break;
+                    }
+                    gc.aud.clip = gc.wrong;
+                    gc.aud.Play();
+                }
+            }
+
+                if (Input.GetKeyUp(KeyCode.Space) && canKiss||
+                Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended && canKiss) // kith
+            {
+                if (kissIndicator.canDoAction())
+                {
+                    gc.aud.clip = gc.right;
+                    gc.aud.Play();
+                    anim.Play("kiss");
+                    gc.ShowNewText("You kissed " + homie.currentHomie._name + " goodnight! ;)");
+                    gc.RestartMatch();
+                    gc.gameEnd = true;
+                }
+                else
+                {
+                    anim.Play("kissFail");
+                    gc.ShowNewText("You tried to give " + homie.currentHomie._name + " a smooch and missed!");
+                    gc.aud.clip = gc.wrong;
+                    gc.aud.Play();
                 }
             }
         }
@@ -58,6 +102,7 @@ public class PlayerBehavior : MonoBehaviour
 
     public void FreezeIndicators()
     {
+        homie.anim.Play("shock");
         homie.kissIndicator.stunTimer = 1.5f;
         homie.intimidateIndicator.stunTimer = 1.5f;
 
@@ -70,11 +115,13 @@ public class PlayerBehavior : MonoBehaviour
 
     public void SpeedUpIndicators()
     {
+        homie.anim.Play("shock");
         homie.kissIndicator.speed += 0.03f;
         homie.intimidateIndicator.speed += 0.03f;
     }
     public void SlowDownIndicators()
     {
+        homie.anim.Play("shock");
         homie.kissIndicator.speed -= 0.03f;
         homie.intimidateIndicator.speed -= 0.03f;
     }

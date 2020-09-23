@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
-[CreateAssetMenu(fileName ="Homie",menuName ="Custom Class/Homie",order = 0)]
+[CreateAssetMenu(fileName = "Homie", menuName = "Custom Class/Homie", order = 0)]
 public class Homie : ScriptableObject
 {
     public string _name;
-    public float intimidateTime;
-    public float kissTime;
-    public Animator myAnim; // may switch with sprites bc animating characters is too much. keep that in mind
+    public float maxIntimidateTime, minIntimidateTime, intimidateTime;
+    public float maxKissTime, minKissTime, kissTime;
+    public AnimatorController myAnim;
 
-    public bool isdoingAction;
 
     public enum Action // ea. action's number reflects the time it'll take for the homie to do it
     {
@@ -25,13 +25,22 @@ public class Homie : ScriptableObject
     public void ChooseRandomAction()
     {
         myAction = (Action)Random.Range(1, 4);
-        intimidateTime = (float)myAction / 2f;
+        intimidateTime = (float)myAction;
 
-        Debug.Log("Testing to make sure! Action is currently " + myAction + " and the time it takes to do it is " + intimidateTime);
+        /*        Debug.Log("Testing to make sure! Action is currently " + myAction + " and the time it takes to do it is " + intimidateTime);*/
     }
-    public void StartMatch()
+
+    public void GetRandIntimidateTime()
     {
-        Debug.Log("Match Start!\nAbout to kiss " + _name + " goodnight!");
+        intimidateTime = Random.Range(minIntimidateTime, maxIntimidateTime);
+    }
+
+    public void GetRandKissTime()
+    {
+        kissTime = Random.Range(minKissTime, maxIntimidateTime);
     }
 }
+
+
+
 

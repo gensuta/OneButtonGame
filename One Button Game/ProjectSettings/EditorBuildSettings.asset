@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/CatPrototype.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Instructions.unity
+    guid: 7d726d21ace9b0347a74a420dc939e4a
+  - enabled: 1
+    path: Assets/Scenes/HomiePrototype.unity
+    guid: 88153e7216c1c9548adc126e0e381c22
   m_configObjects: {}
